@@ -1,0 +1,1179 @@
+Shell script
+
+debug mode
+#! /bin/bash -x
+
+adding tab space and new line in echo 00:09:12
+echo -e "one\ttwo\n"
+
+adding backlash to print "" in echo 
+echo "testing out \"backlash\""
+
+adding echo statement into file rediect/Overwrite  >,  append >>   00:21:41
+echo "testing out \"backlash\"" > test.txt , >> test.txt
+
+# Single Line Comments # 00:23:40
+#echo "testing out \"backlash\"" 
+ 
+# Multi Line Comments Using Heredocs 00:27:56
+<<cmt
+echo "testing out \"backlash\"" 
+echo "testing out \"backlash\"" 
+cmt
+
+# Simple Variable Usage 00:30:16
+var="sks"
+echo $var
+var2=22
+echo $var2
+
+# Multi Word Variables Combinations with Quotes 00:32:27
+var="sks"
+var2=22
+c="${var} ${var2}"
+echo $c
+
+# HOME variable print user home dir path 00:35:28
+echo "$HOME"
+ls "$HOME"
+cd $HOME
+
+
+# USER variable print username 00:38:16
+echo "$USER"
+
+# HOSTNAME variable print hostname 00:39:24
+echo "$HOSTNAME"
+
+# Echo $HOME with Escape to Avoid Expansion prints $HOME 00:40:16
+echo "\$HOME"
+
+# Writing to file in HOME Directory Using HOME Environment Variable create file there 00:41:34
+cd $HOME
+touch sks.txt
+ls
+
+# Simple Touch Command to create dile 00:44:47
+touch sks.txt
+ls
+
+# Create a Symbol Link, Write To Linked File, Cat file shows file contain through link 00:46:57
+ln(link craetion) -s(save) file.txt(filename) link1(link name)
+ls
+cat link1
+
+
+# Chmod Command,  00:50:40
+chmod 7(user)7(group)7(other) file.sh(file name)
+rwx	=all	no permission
+421 =7		0
++x (adds executable permission to all) 
+
+# Chmod Command, Make Not-Writable, Try to Write to it 00:53:29
+chmod -w file.sh
+-w (remove write permission to all)
+
+# Chown File To Different User, Run ls before, after 00:56:44
+touch file.txt
+sudo chown user file.txt
+ls
+
+# Underscore Variable, Touch File, Use Underscore Variable to Append to It 00:59:59
+one_var= "sks"
+touch file.txt
+echo "$one_var" >> file.txt
+cat file.txt
+
+# Let Command to initilse veriable  Arithmetic 01:03:42
+let a=3 b=4 c=a+b
+echo "$a $b $c"
+
+
+# 4 Basic Operators, Add with expr 01:05:13
+a=3
+b=4 
+expr $a + $b
+
+# Increment a variable 2 times with Increment Operator 01:07:56
+a=1 
+echo "$a"
+a=$((a+=1))
+echo "$a"
+a=$((a+=1))
+echo "$a"
+
+
+# Decrement a variable 2 times with Decrement Operator 01:10:34
+a=3 
+echo "$a"
+a=$((a-=1))
+echo "$a"
+a=$((a-=1))
+echo "$a"
+
+
+# Echo Number Modulus Second Number 01:12:36
+a=2
+b=4
+echo "$(($a % $b))"
+
+
+# Echo Number to Exponent of Second Number 01:14:50
+VAR=$((8**2))"
+echo "$VAR"
+
+# Expr Command for Math 01:16:17
+a=4
+b=9
+expr $1 + $b
+expr $1 \* $b
+
+
+# Double Parenthesis for Math 01:19:14
+num1=4
+num2=3
+echo "$(($num1 + $num2))"
+echo "$(($num1 * $num2))"
+
+# Double Parenthesis with Dollar Operator Assign to Variable 01:21:40
+num1=4
+var= $((num1+10))
+echo "$var"
+
+# Multiplication has Precedence Over Addition Regardless of Order 01:23:43
+var= $((3* (2+9)))
+echo "$var"
+var= $(((2+9)*3))
+echo "$var"
+
+# Combine Two Strings In One Line With Variables 01:25:49
+var1= "one"
+echo "$var"
+var2= "two"
+echo "$var2"
+var3= "${var1}${var2}"
+echo "$var3"
+var3= "${var1}     ${var2}"
+echo "$var3"
+
+# Plus Equal Operator Combine Strings 01:31:24
+var1= "one"
+echo "$var"
+var2= "two"
+echo "$var2"
+var1+= "$var2"
+echo "$var1"
+
+# Create Multi-Line String Variable with HEREDOC 01:34:38
+var= $(cat<<'heredoc'
+one
+two
+three
+heredoc
+)
+echo "$var"
+
+# Cat Multi-Line HEREDOC Text 01:37:04
+cat<<heredoc
+pwd $PWD
+user $(whoami)
+heredoc
+
+# If Conditional Statement 01:39:43
+var=8
+if [ $var -gt 9 ]
+then
+echo "good"
+fi
+
+# Logical And in Conditional Statement 01:43:00
+var=8
+if [[ $var -gt 9 ]] && [[ $var -lt 7 ]];
+then
+echo "good"
+fi
+
+# Logical Or in Conditional Statement 01:46:53
+var=8
+if [[ $var -gt 9 ]] || [[ $var -lt 9 ]];
+then
+echo "good"
+fi
+
+# If Elif Else Conditional Statement 01:51:29
+var=8
+if [[ $var -gt 9 ]]
+then
+echo "good"
+elseif  [[ $var -lt 7 ]]
+echo "no problem"
+else 
+echo "ok"
+fi
+
+# Nesting If Conditions 01:58:28
+var=8
+if [[ $var -gt 9 ]]
+then
+if  [[ $var -lt 7 ]]
+then
+echo "good"
+fi
+
+# Equal vs Double Equal Operator checks byte to byte 02:01:36
+var="hello"
+var2="world"
+if [ $var = $var2 ]
+then
+if [ $var == $var2 ]
+then 
+echo "both equal and double equal are same"
+else 
+ echo " both equal and double equal are not same"
+ fi
+ 
+# Test Not Equal Strings 02:05:03
+var="hello"
+var2="world"
+if [ $var != $var2 ]
+then
+echo "both are same"
+else 
+ echo " both not same"
+ fi
+ 
+# Test Two Strings Before or After alphabetically 2:06:33
+var="hello"
+var2="world"
+if [ $var == $var2 ]
+then
+echo "both are same alphabetically"
+else 
+ echo " both not same"
+fi
+
+# Test String is Null 02:08:07
+var="hello"
+if [[ $var == '' ]]
+then
+echo "empty"
+else 
+ echo " not empty"
+fi
+
+# Test Numerical Comparisons Greater then, Less then 02:10:39
+var=8
+if [ "$var" -gt 9 ] && [ "$var" -lt 9 ]
+then
+echo "good"
+fi
+
+# Test Numerical Compare Greater Then Or Equal, Less Than Or Equal 02:12:58
+var=6
+if (( $var >= 9 )) && (( $var <= 3 ))
+then
+echo "good"
+fi
+
+# Test Compare Numbers Are Equal 02:15:02
+var=6
+var2=6
+if (( $var == $var2 ))
+then
+echo "same"
+fi
+
+# Test File Exists 02:19:15
+var=file.txt
+if [ -f "$var" ]
+then
+echo "file exist"
+fi
+
+# Test File Is Not Zero Size 02:21:10
+var=file.txt
+if [ -s "$var" ]
+then
+echo "file not zero size"
+else
+echo "file zero size"
+fi
+
+# Test File Is A Directory 02:22:43
+var=$PWD
+if [ -d "$var" ]
+then
+echo "directory"
+fi
+
+# File Is A Symbolic Link 02:24:22
+var=link
+if [ -L "$var" ]
+then
+echo "link"
+fi
+
+# Test File Has Read Permission 02:26:18
+var=file.txt
+if [ -r "$var" ]
+then
+echo "has read permission"
+fi
+
+# Test File Has Write Permission 02:27:35
+var=file.txt
+if [ -w "$var" ]
+then
+echo "has write permission"
+fi
+
+# Test File Has Execute Permission 2:28:57
+var=file.txt
+if [ -x "$var" ]
+then
+echo "has ececutable permission"
+fi
+
+# Case Conditional Statement With Numbers 2:31:24
+var==11
+case $var in 
+  10)
+		echo "it's 10"
+		;;
+  20)
+		echo "it's 20"
+		;;
+  30)
+		echo "it's 30"
+		;;
+  *)
+		echo "no is not 10,20,30"
+		;;
+esac
+
+# Case Conditional Statement With Strings 02:34:02
+var="one"
+case $var in 
+  one)
+		echo "it's 1"
+		;;
+  two)
+		echo "it's 2"
+		;;
+  three)
+		echo "it's 3"
+		;;
+  *)
+		echo "no is not 1,2,3"
+		;;
+esac
+
+# Case Conditional Statement With Wildcards 02:36:11
+case $1 in 
+  req*)
+		echo "it's a request"
+		;;
+  meet*)
+		echo "it's a meeting"
+		;;
+   *)
+		echo "default"
+esac
+
+# Execute a Command With Backticks chnage the ownwership of the directory 02:38:13
+chown user \dir
+
+# Execute a Command in a Dollar Parenthesis Variable 02:40:06
+var=$(cat file.txt)
+echo "$var"
+
+# Execute a Command and Capture STDOUT 2:42:00
+var=$(cat file.txt)
+echo "$var" > output.txt
+
+# Execute a Command And Capture STDERR 2:43:40
+var=$(cat file.txt)
+$var > stderr.txt
+
+# Execute a Command And Capture Return Code 02:44:49
+var=$(cat file.txt)
+echo "$var" 
+echo $? > returncode.txt
+
+# Bash Exec Command Hello World 02:46:20
+exec > tmp
+echo "hello world"
+
+# Eval Command print on terminal 02:47:55
+eval echo "hello"
+
+# For Loop List of Values 02:49:06
+for i in {1 2 3 4 5}; do
+echo "this is the value : $i"
+done
+
+# For Loop on Range of Numbers 02:49:57
+for i in {10..20}; do
+echo "this is the value : $i"
+done
+
+# For Loop Output of Command 02:50:26
+for i in $(cat file.txt); do
+echo "$i"
+done
+
+# For Loop Files in Directory 02:51:26
+for i in ./*.txt; do
+echo "$i"
+done
+
+# For Loop with Conditional Break 02:52:12
+for i in {1..10}; do
+if (( $i < 5 )); then
+echo "$i"
+else
+ break;
+ fi
+done
+
+# For Loop with Conditional Continue 02:53:05
+for i in {1..10}; do
+if (( $i == 5 )); then
+continue
+else
+ echo "$i"
+ fi
+done
+
+# While Loop With Integer Counter 02:53:41
+i=0
+while (( ++i <= 5 )); do
+echo "counter is at $i"
+done
+
+# Until Loop Based on File Size 02:54:34
+filename='basename "$0"'
+echo $filename
+tmp_file="./tmp1"
+tgt_file="./target"
+cat $filename  > $tgt_file
+filesize=0
+
+until [ $filesize -gt 2048 ]; do
+cp $tgt_file $tmp_file
+cat $tmp_file >> $tgt_file
+
+filesize='du $tgt_file | awk '{print $1}''
+echo "size of file : $filesize bytes"
+sleep 1
+done 
+echo "new size of the file exceed tgt of 2kb"
+
+# Create an Array Variable Access by Index 02:55:21
+car=('bmw 'toyota')
+echo "${car[2]}"
+
+# Create an Associative Array Variable Access by Index 02:55:52
+declare -A car
+car=[bmw]=i8
+car=[toyota]=corola
+echo "${car[2]}"
+
+# Accessing Array Members with Loop 02:56:36
+car=('bmw 'toyota')
+for i in "${car[@]}"; do
+echo "$i"
+done
+
+# Time a Command to get time details 02:57:16
+car=('bmw 'toyota')
+for i in "${car[@]}"; do
+echo "$i"
+done
+
+time ./filename.sh
+
+# Print Date 02:57:43
+var=$(date)
+echo "$var"
+
+# Print Date With Format 02:58:19
+#date with hyphen 
+var=$(date +%F)
+echo "$var"
+#date with backslash
+var=$(date +%D)
+echo "$var"
+#year
+var=$(date +%Y)
+echo "$var"
+
+# Print Seconds Elapsed for Block of Code 02:58:57
+timeformat="it tajes %R seconds to complete the task"
+time {
+    for i in 1 2 3; do
+        echo "writting code in curly braces to calculate time "
+    done
+}
+
+# Read Text From File, Print to Screen 02:59:27
+file='file.txt'
+n=1
+while read line; do
+    echo "line-$n : $line"
+    n=$((n+1))
+    done < $file
+
+# Read Text From File, If Condition Print to Screen 03:00:00
+file='file.txt'
+n=1
+while read line; do
+    echo "line-$n : $line"
+    n=$((n+1))
+    if ((n>2)); then
+     break;
+    fi
+    done < $file
+
+# Basic Read Command 03:00:44
+
+echo "enter value"
+read one
+echo "you have entered $one"
+
+# Read Command Into Array 03:01:16
+echo "enter values"
+read -a one
+echo "you have entered "
+for i in ${one[@]}; do
+echo "$i"
+done
+
+# Read Command with Delimiter 03:02:08
+echo "enter car names and model"
+IFS='|' read car model <<< 'BMW | i8'
+echo "hello car is $car and model is $model"
+
+
+# Read Command with Timeout 03:02:38
+date 
+read -t 14 -p "press enter key or wait 14 sec"
+date
+
+# Menu Option with Select Command 03:03:07
+ps3='please choose car:
+cars=("bmw" "toyota")
+select car in "${cars[@]}"
+do 
+case $car in 
+"bmw")
+echo " bmw"
+ ;;
+"toyota"
+echo " toyota" 
+"quite"
+break
+;;
+*) echo "invalid "
+
+# Menu Option With Select Command From Array Variable 03:04:03
+ps3='please choose car:
+menu ()
+{
+select item; do
+if [ 1 -le "$reply" ] && [ "$reply" -le $# ]; then
+        echo " selected $item "
+        break;
+     else
+        echo " wrong select any no from 1- $#" 
+    fi
+done
+}
+cars=('bmw' 'toyota' 'honda')
+menu "${cars[@]}"
+
+# Split String By Space 03:05:05
+ line= "this is line which would have spaces"
+ for word in $line; do
+ echo "$word"
+ done
+
+# Split String By Custom Delimiter 03:05:32
+ line= "this!is!line!which!would!have!spaces"
+ delimiter=!
+ s=$line$delimiter
+ array=();
+ while [[ $s ]]; do
+ echo "${s%%"$delimiter"*}"
+ s=${s#*"$delimiter"}
+ done;
+
+# Split String into Array Variable 03:06:04
+ line= "this,is,line,which,would,have,spaces"
+ IFS=','
+ read -ra ADDR <<< "$line"
+ for i in "${ADDR[@]}"; do
+ echo "$i"
+ done
+ 
+ IFS='' 
+ 
+# Split String by Multi-Byte Delimiter 03:06:35
+line="kendXYZkdnwnddnXYZwdnwkeXYZdnwenewkj"
+delimiter="XYZ"
+line=Len=${#line}
+d=${#delimiter}
+i=0
+LEN=0
+P=0
+mArr=()
+while [ $i -li $lineLen ] ; do
+     if [ $delimiter == ${line:$i:$d} ]; then
+     mArr+=(${line:P:$Len})
+     P=$(( i + d ))
+     Len=0
+     i=$(( i + d )) 
+     fi
+     i=$(( i + d ))
+     fi
+     i=$(( i + 1 ))
+     Len=$(( Len + 1 ))
+     done
+     mArr+=(${line:P:$Len})
+     declare =p mArr
+     
+# Parse Command Line Options with Position 03:07:33 
+
+echo $1 $2
+
+# Parse Command Line Options With Shift Command 03:08:29
+shift 0
+echo  0= $0
+echo  1= $1
+echo  2= $2
+echo  3= $3
+echo  4= $4
+
+
+# Parse Command Line Using GetOpt 03:08:43
+while getopts 'xyz; OPTION; do
+ case "$OPTION" in
+ x)
+ echo "this is "x"
+ y)
+ echo "this is "y"
+ z)
+ echo "this is "z"
+ z="$OPTARG"
+ echo" the value provided is $2"
+ ;;
+ ?)
+ echo "script usage : $(basename $0) [-x] [-y] [-z]" >&2
+ ;;
+ esac
+ done
+ shift "$(($OPTIND -1))"
+ 
+ 
+# Read Password from Stdin, Without Printing it we are printing passwordjust to check if it is correctly taking the input 03:09:26
+echo "type a password"
+read -s password
+echo " "
+echo "thanks for putting password : $password"
+
+
+# Pipe Command Example 03:09:56
+cat car.txt |sort
+
+# Cat Pipe Word Count Example 03:10:36
+cat car.txt | wc -w
+
+#Read from Stdin send data with pipe / make copy of the data 
+cat car.txt | while read x ; do
+echo $x ; done | cat > new.txt
+
+# echo to bc Command for Math Expression Simple 3:11:46
+var1=50
+var2=10
+echo  $var1 + $var2 | bc
+
+# Function Prints Common Text, Call Multiple Times 03:12:40
+function func()
+{
+ echo 'hello , this is a text'
+}
+func
+func
+
+# Function Returns a String 03:13:10
+function func()
+{
+ restr='hello , this is a text'
+}
+retstr='bash i excellent"
+echo  $retstr
+
+func
+echo  $retstr
+
+# Function Takes Params, Returns Sum 03:13:56
+function func()
+{
+sum=$(($1 + $2))
+echo "sum is : $sum"
+}
+func 5 4 
+
+
+# Tput Command to Print String 03:14:28
+tput bold
+echo "tput cmd to print in bold"
+
+# Tput Command to Print Number 03:14:50
+tput cols
+
+# Tput cmd to move cursor to arbiteary location
+tput cup 10 10
+
+# Tput to Clear Terminal 03:15:35
+tput clear
+
+# Tput to Print Attributes of Terminal Simple 03:15:52
+tput logname
+tput -v
+
+# Tput to Print Attributes of Terminal More Complex 03:16:13
+tput logname
+tput -v
+tput lines 
+tput cols
+tput colors
+
+# Assign String Variable with Declare 03:16:36
+ declare var="string varible"
+ echo $var
+
+# Check If Variable Created with Declare 03:16:55
+ declare var="string varible"
+ echo $var
+if [ -z ${var+a} ]; then
+echo "var not declare"
+else
+echo "var declare"
+fi
+
+# n Option for Declare to Nameref Alias 03:17:37
+bar=a
+declare -n foo=bar
+echo ${foo} ${bar}
+foo=b
+echo ${foo} ${bar}
+true
+
+# Forcing Variable to Integer with Declare 03:18:14
+str=2
+declare -i str=$(($(str#0)+1))
+echo $str
+
+# Forcing Case with Declare 03:18:45
+number=array
+case $number in
+array)
+ declare -i n[0]=4
+ declare -i n[1]=6
+ esac
+ echo ${n[0]}
+
+# Readonly Variables with Declare 03:19:08
+ declare -r author="linux"
+ author="windows"
+ echo $author
+
+# Indexed Arrays with Declare 03:19:44 
+ declare -a my_array
+ my_array={linux ubuntu linux}
+ echo ${my_array[0]}
+echo ${my_array[@]}
+
+# Associative Arrays with Declare 03:20:12
+
+ declare -A asso_array
+ asso_array={[linux]=cli [ubuntu]=gui}
+ echo ${asso_array[linux]}
+ echo ${asso_array[ubuntu]}
+
+# Automatically Answer Question with yes Command 03:20:36
+ yes | cp -i file.txt new.txt 
+
+# Use And Operator to Run Second Command Only if First Succeeds 03:21:03
+s1=4
+s2=2
+if [[ ($s1 -gt $s2) && ( $s1 -eq 3) ]]; then
+echo "condition passed"
+else
+echo "condition failed"
+fi
+
+# Use Or Operator to Run Second Command Only if First Fails 03:21:58
+s1=4
+s2=2
+if [[ ($s1 -gt $s2) || ( $s1 -eq 3) ]]; then
+echo "condition passed"
+else
+echo "condition failed"
+fi
+
+# xargs to operate on all files in directory 03:22:40
+la "file" | xargs wc
+
+# Wait For Another Command to Complete 03:23:10
+echo "testng wait cmd 1 " &
+process_id=$!
+echo "testng wait cmd 2 " &
+wait $process_id
+echo "cmd 1 is completed"
+echo "cmd 2 is completed"
+
+# Combine Kill and Wait Commands 03:23:57
+echo "testng wait cmd " 
+sleep 30 &
+pid=$!
+kill $pid
+wait $pid
+echo "$pid was terminated"
+
+# Star Wildcard on File Selection (create file1,file2,file3,fileZ files in current dir) 03:24:27
+ls -l file*
+
+# Question Mark Wildcard on File Selection 03:25:17
+ls -l fil?Z
+
+# Square Bracket on File Selection 03:25:45
+ls -l file[12]
+
+# Parenthesis and Pipe for File Selection Options 03:26:12
+ls -l [f-h]* | wc -l
+
+# Brace Expansion Comma Seperated List 03:27:01
+echo linux{1,2,3} | tr ' ',
+echo linux{A,B,c} | tr ' ',
+
+# Brace Expansion Range 03:27:26
+echo {A..E}
+echo {M..Z} {1..12}
+
+# Brace Expansion with Preamble 03:27:51
+echo {file1,file2}\ {\A," B "," C"}
+
+# Operating on List of Files with Brace Expansion 03:28:11
+mkdir "dir"{4..7}
+ls
+
+# Reference Home Directory with Tilde 03:28:40
+echo ~
+
+# Parameter Expansion for Printing Constant or Variable if Unset 03:28:59
+echo "${var:-unset}"
+
+# Substring Expansion for Printing Part of String 03:29:25
+string="this is string"
+echo $string
+echo ${string:?0:4}"
+
+# Parameter Expansion for Assigning Constant to Variable if Unset 03:29:55 
+echo "${var:-unset}"
+echo "lets assign a value "
+echo "${var:=bash}"
+
+# Check If File Executable, Set If Not 03:30:22
+file="file1"
+if [[ -x "$file" ]]; then
+echo "file is not executable"
+chmod =x $file
+echo "file is executable"
+fi
+
+# Check If File Is Owned By User, Set If Not 03:31:18
+file="file1"
+if [[ -O "$file" ]]; then
+echo "file is not owned by login user"
+sudo chown linuxuser $file
+echo "file is owned by login user"
+fi
+
+# wc To Count Lines In A File 03:31:59
+file.txt | wc -l
+
+# wc to Count Characters in a File 03:32:38
+file.txt | wc -c
+
+# Head Command With Default Args 03:33:05
+ls | wc -l
+
+
+# Head Command With Default Args 03:33:57
+file.txt | head
+
+# Head Command to Print First 100 Lines 03:33:32
+file.txt | head -n 100
+
+# Tail Command With Default Args 03:33:57
+file.txt | tail
+
+# Tail Command to Print Last 100 Lines 03:34:15
+file.txt | tail -n 100
+
+# Find Command to Locate Matching Pattern Files 03:34:33
+find . -name file.txt -print
+find . -name fi*.txt -print
+find . -name *le.txt -print
+find . -name *l*.txt -print
+
+# Find Command to Locate Files Based on Date 03:35:44
+find . -name file.txt type f ls | grep 'July 3'
+ 
+# cut Command to Parse Delimited Columns of Data ( create file with data spaced by tab) 03:36:21
+cut -f 4 file.txt
+cut -f 2-3 file.txt
+ 
+# grep Command to Search for Pattern 03:37:14
+cat file.txt
+grep sum file.txt
+
+# grep Command to Search for Lack of Pattern print line without in word 03:37:38
+grep -v is file.txt 
+
+# grep Command to Search for Case Insensitve Pattern 03:38:03
+grep -i linux file.txt 
+
+# grep Command with Wild Cards 03:38:34
+grep li* file.txt 
+
+# grep Command to Search All Files in Directory Recursive 03:39:01
+grep -r lin*
+
+# grep Command to Search for File in a Directory Recursively 03:39:34
+grep -rl lin*
+
+# awk Split On Whitespace 03:40:27
+awk 'BIGIN{ site="linuxhint"; print site}'
+awk '{ print $2 $3 }' file.txt
+
+# awk Print Last Field in Each Line 03:41:07
+ awk '{ print $NF }' file.txt
+
+# awk Print Only Match of Regex find and print line where "here" is present  03:42:00
+awk '/here/' file.txt
+
+# awk With If Else Condition print for each line if writting word is present 03:42:23
+awk '{
+ if ($1 == "writing")
+ {
+ print "yes it is ", "\n"
+ }
+ else
+ {
+ print "no its not ", "\n"
+ }' file.txt
+
+# awk With Ternary Operator 03:43:05
+ awk '{
+ if ($1 == "writing") ?  "yes it is ", "\n" : "no its not ", "\n"
+ }' file.txt
+
+# sed To Replace Matching Text 03:43:38
+sed 's/here/where/' file.txt
+
+# sed To Replace Second Instance of Matching Text on Line 03:44:06
+sed 's/is/where/2' file.txt
+
+# sed to Delete Specific Lines 03:44:39
+sed '2d' file.txt
+
+# sed to Add a Line Before Matched Line 03:45:04
+sed '/^writting*./i Before' file.txt
+
+# sed to Add a Line After Matched Line 03:45:41
+sed '/^writting*./a After' file.txt
+
+# Sort Data in File with sort Command 03:46:02
+sort file.txt
+
+# Sort Data Ignore Case 03:46:29
+sort -f file.txt
+
+# Sort Data numerically 03:46:58
+sort -n file.txt
+
+# Print Unique Data with uniq Command 03:47:31
+unique file.txt
+# Count Unique Lines in File
+uniq -c file.txt
+#only print repeated line with count
+uniq -cd file.txt 
+
+# Count Unique Lines in File with Sort, Uniq, and wc 03:48:22
+sort file.txt | uniq -c | sort -bgr
+
+# Convert Data to Uppercase with tr 03:50:15
+tr '[a-z]' '[A-Z]' < file.txt
+
+# Convert Data to Lowercase with tr 03:52:06
+tr '[A-Z]' '[a-z]' < file.txt
+
+# Create a tar File 03:53:44
+echo "enter filename"
+read filname
+if [[ -f "$filename" ]]
+then
+tar -cvzf $filename.tar $filename --remove-file 
+else 
+echo "file not found"
+fi
+
+# Create a Zipped Tar File 03:55:58
+echo "enter filename"
+read filname
+if [[ -f "$filename" ]]
+then
+tar -cvzf $filename.tar.gz $filename --remove-file 
+else 
+echo "file not found"
+fi
+
+# Unzip a Compressed Tar File 03:57:14
+echo "enter filename"
+read filname
+if [[ -f "$filename" ]]
+then
+tar -xzf $filename 
+else 
+echo "file not found"
+fi
+
+# Parse JSON File with jq 03:59:01
+echo "enter filename"
+read filname
+if [[ -f "$filename" ]]
+then
+cat $filename | jq '.' 
+else 
+echo "file not found"
+fi
+
+# Print Specific Field in JSON with jq 04:01:49
+echo "enter filename"
+read filname
+if [[ -f "$filename" ]]
+then
+ jq '.quize.sport.q1.question' $filename 
+else 
+echo "file not found"
+fi
+
+# Print Cpu Info With Pseudo Filesystem 04:04:34
+cat /proc/cpuinfo
+
+# Print Mem Info With Psuedo Filesystem 04:07:01
+cat /proc/meminfo
+
+# Print Mounts With Psuedo Filesystem 04:08:10
+cat /proc/mounts
+
+# Print Network Stats With Psuedo Filesystem 04:09:45
+cat /proc/net/netstat
+
+# Print Disk Usage with du 04:12:10
+du /home/user/downloads/
+#summary
+du -s /home/user/downloads/
+
+# Print Disk Usage Human Readable with du 04:15:04
+du -h /home/user/downloads/ 
+
+# Create File of Specified Size with dd 04:17:07
+dd if=/dev/zero of=myfile.txt count=1 bs=1024
+    directory     filename     block   size
+
+# Time Disk Writing with dd and time 04:19:22
+dd if=/dev/zero of=myfile.txt count=1 bs=1024 oflag=dsync
+    directory     filename     block   size   for time value
+
+# Send a Mail with mail Program 04:20:35
+#install ssmtp
+#edit config file
+vi /etc/ssmtp.conf
+  { root=youremailid
+    mailhub=smtp.gmail.com:587
+    AuthUser=youremailid
+    AuthPass=password
+    UsesSTARTTLS=yes
+    }
+ #script 
+ ssmtp yourmail.gmail.com 
+ #Run the script and enter following command before that in gmail allow less secure app acess in settings-security tab
+ To: otheremail.gmail.com
+ From: youremailid
+ Message
+ #Ctrl + d
+ 
+# Send a Mail with mail Program Change Subject 04:25:39
+#script 
+ssmtp yourmail.gmail.com 
+#execute above script and write below messages
+To: otheremail.gmail.com
+From: youremailid
+Subject: subject
+Message
+#Ctrl + d
+
+# Send a Mail with mail Program to Multiple Recipients 04:27:08
+#script 
+ssmtp yourmail.gmail.com 
+#execute above script and write below messages
+To: otheremail1.gmail.com otheremail2.gmail.com otheremail3.gmail.com
+From: youremailid
+Subject: subject
+Message
+#Ctrl + d
+
+# Send a Mail with mail Program to CC and BCC list 04:29:00
+#script 
+ssmtp yourmail.gmail.com 
+#execute above script and write below messages 
+To: otheremail1.gmail.com  
+From: youremailid
+Subject: subject
+Cc: otheremail2.gmail.com
+Bcc: otheremail3.gmail.com
+Message
+#Ctrl + d
+
+# Print Mounts Usage with df 04:30:40
+df
+df -a
+
+# Send a Mail with mail Program with Encoded Attachment 04:32:36
+#install mutt
+echo "this is mailbody" | mutt -a "/home/ubuntu/file.txt" -s "file attchment" -- ypuremail
+      mail body                     file path                    subject            email      
+echo "email is sent successfully" 
+
+# Download Webpage with Curl 04:36:22
+#install curl
+curl url --output file.txt
+
+# Post to HTTP with Curl 04:39:31
+curl -X POST -d @file.txt url
+
+# Put Command in Background 04:41:02
+cmd &
+
+# Resume Command From Background 04:42:05
+fg 
+
+# Execute Last Command Again with Bang Bang 04:42:58
+!!
+
+# tee Command to Print to File and Screen 04:43:57
+tee -a file.txt
