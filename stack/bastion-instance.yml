@@ -1,0 +1,90 @@
+
+---
+- name: setup bastion host
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Import bastion host Vaiable file 
+      include_vars: vars/bastionvars.txt
+
+    - name: Import Output Variable file 
+      include_vars:  vars/output_vars
+
+
+# creating a key for the bastion host
+
+    - name: ec2 key
+      ec2_key:
+       name: bastion_host
+       region: "{{region}}"
+      register: keyout
+
+#print O/P on the shell 
+#    - debug:
+#         var: keyout
+
+# storing key in the local system 
+
+    - name: store  bastion_host login key
+      copy:
+        content: "{{keyout.key.private_key}}"
+        dest: "/home/ubuntu/bastionhostkey.pem"
+        mode: 0600
+      when: keyout.changed
+
+# creating sg for bastion host
+
+    - name: SG for bastion host 
+      ec2_group:
+        name: Bastion-host
+        description: Allow port 22 from everywhere and all port within sg
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: "{{MYIP}}"
+      register: bastionSG_out
+
+#print O/P on the shell
+#    - debug: 
+#        var: bastionSG_out
+
+
+# creating Bastion Host instance
+    - name: creating Bastion Host instance
+      ec2:
+          key_name:  bastion_host
+          region: "{{region}}"
+          instance_type: "{{bastion_instance_type}}"
+          image: "{{bastion_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: "Bastion Host"
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: "Bastion Host"
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{bastionSG_out.group_id}}"
+          vpc_subnet_id: "{{pubsub1id}}"
+      register: bastionHost_out
+    - name : Insert/Update "BastionSGid" in vars/output_vars
+      blockinfile: 
+        path: vars/output_vars
+        backup: yes
+        block: 
+          BastionSGid: {{bastionHost_out.group_id}}
+
+#print O/P on the shell
+    - debug: 
+        var: bastionHost_out
+
+        

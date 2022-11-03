@@ -1,0 +1,54 @@
+You need to have ansible version 2.9.10 and newer for that you need pip to be install then install ansible with pip
+
+Run playbooks in below order :-
+
+
+change the MY IP in the VPC_vars.txt file
+1) site.yml -> vpc-setup.yml
+	    -> bastion-instance.yml
+
+this will create the optput_vars file which consist ID of Subnets, IGW, NATGW,VPC 
+
+2) ec2-stack.yml 
+
+to install servivces we need to provision an AMI/controller machine in private subnets
+
+3) site.yml -> build.yml
+	    -> set_host_in_map.yml
+	    -> db.yml
+	    -> dbdeploy.yml
+	    -> memcached.yml
+	    -> rabbitmq.yml
+	    -> appserver.yml
+	    -> web.yml
+	    
+
+	    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

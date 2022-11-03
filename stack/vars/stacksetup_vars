@@ -1,0 +1,6 @@
+nginx_ami: ami-09d56f8956ab235b3
+tomcat_ami: ami-09d56f8956ab235b3
+memcache_ami: ami-09d56f8956ab235b3
+rmq_ami: ami-09d56f8956ab235b3
+mysql_ami: ami-09d56f8956ab235b3
+instance_type: t2.micro

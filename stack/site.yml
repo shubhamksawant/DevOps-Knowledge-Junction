@@ -1,0 +1,16 @@
+---
+- import_playbook: Phase1/vpc-setup.yml
+- import_playbook: Phase1/bastion-instance.yml
+
+
+#phase 1 installation
+#You need to have ansible version 2.9.10 and newer for that you need pip to be install then install ansible with pip
+#Run playbooks in below order :-
+#change the MY IP in the VPC_vars.txt file
+#1) site.yml -> 
+           # -> vpc-setup.yml 
+           # -  include - vars/VPCvars.txt
+           # -> bastion-instance.yml
+           # -  include vars/bastionvars.txt , vars/output_vars
+#this will create the optput_vars file which consist ID of Subnets, IGW, NATGW,VPC 
+   

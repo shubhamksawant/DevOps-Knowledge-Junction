@@ -1,0 +1,28 @@
+---
+  - name: Deploy SQL filr on accounts db
+    hosts: dbsrvgrp
+    gather_facts: no
+    tasks:
+      - name: copy sql to dbsrv
+        copy:
+          src: files/db_backup.sql
+          dest: /tmp/db_backup.sql
+        tags:
+          - deploy
+
+      - name: Restoring db
+        mysql_db:
+          name: accounts
+          login_user: "{{dnuser}}"
+          login_password: "{{dbpass}}"
+          state: import
+          target: /tmp/db_backup.sql
+        notify: 
+            - Restart mysql
+        tags: 
+            - deploy
+    handlers:
+      - name: Restart mysql
+        service:
+            name: mysql
+            state: restarted

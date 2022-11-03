@@ -1,0 +1,6 @@
+ bastion_ami: ami-0022f774911c1d690   #Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type - Free tier eligible
+ region: us-east-1
+ MYIP: 103.177.175.172/32               # IP address of the PC/ Laptop of the user 
+ bastion_instance_type: t2.micro
+
+ 

@@ -1,0 +1,325 @@
+---
+- name: setup bastion host
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Import VPC Vaiable file 
+      include_vars: /home/ubuntu/ansible-playbooks/vars/VPC_vars.txt
+
+    - name: Import output Vaiable file 
+      include_vars: /home/ubuntu/ansible-playbooks/vars/output_vars
+
+    - name: Import stack setup file 
+      include_vars: /home/ubuntu/ansible-playbooks/vars/stacksetup_vars
+
+        # creating a key for the EC2 host
+
+    - name: ec2 key
+      ec2_key:
+       name: projectkey
+       region: "{{region}}"
+      register: projectkey_out
+
+        #print O/P on the shell 
+        #    - debug:
+        #         var: projectkey_out
+
+        # storing key in the local system 
+
+    - name: store project login key
+      copy:
+        content: "{{projectkey_out.key.private_key}}"
+        dest: "/home/ubuntu/ansible-playbooks/projectkey.pem"
+        mode: 0600
+      when: projectkey_out.changed
+
+      #create Security Group for Load balancer
+
+    - name: create Security Group for Load balancer
+      ec2_group:
+          name: vproELBSG
+          description: allow port 80 from everywhere & all port within sg
+          vpc_id: "{{vpcid}}"
+          region: "{{region}}"
+          rules:
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: 0.0.0.0/0
+      register: vproELBSG_out
+
+          # print O/P on the shell 
+          #    - debug:
+          #          var: vproELB-SG_out                
+
+    - name: create Security Group for application stack
+      ec2_group:
+          name: vproappSG
+          description: allow port 80 from everywhere & all port within sg
+          vpc_id: "{{vpcid}}"
+          region: "{{region}}"
+          #purge will check if already exist and does not create new one so this is useful for defining idempotancy
+          purge_rules: no
+          rules:
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              group_id: "{{vproELBSG_out.group_id}}"
+            - proto: tcp
+              from_port: 80 
+              to_port: 80
+              group_id: "{{BastionSGid}}"
+      register: vproappSG_out
+
+              #print O/P on the shell 
+              #    - debug:
+              #         var: vproappSG_out
+
+    - name: Update application stack Security Group 
+      ec2_group:
+          name: vproappSG
+          description: allow its own Traffic 
+          vpc_id: "{{vpcid}}"
+          region: "{{region}}"
+          #include new rule and does not delete existing 
+          purge_rules: no
+          rules:
+            - proto: all
+              group_id: "{{vproappSG_out.group_id}}"
+
+                #print O/P on the shell 
+                #    - debug:
+                #         var: vproELB_SG_out
+
+# creating Nginx instance
+    - name: creating Nginx web01 instance
+      ec2:
+          key_name:  projectkey
+          region: "{{region}}"
+          instance_type: "{{instance_type}}"
+          image: "{{nginx_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: Web01
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: Web01
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{vproappSG_out.group_id}}"
+          vpc_subnet_id: "{{PrivSub1Cidr}}"
+      register: Web01_out
+
+#print O/P on the shell
+#    - debug: 
+#       var: Web01_out
+
+
+# creating tomcat instance
+    - name: creating tomcat app01 instance
+      ec2:
+          key_name:  projectkey
+          region: "{{region}}"
+          instance_type: "{{instance_type}}"
+          image: "{{tomcat_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: app01
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: app01
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{vproappSG_out.group_id}}"
+          vpc_subnet_id: "{{PrivSub1Cidr}}"
+      register: app01_out
+
+#print O/P on the shell
+#   - debug: 
+#       var: app01_out
+
+
+# creating memcache instance
+    - name: creating memcache mc01 instance
+      ec2:
+          key_name:  projectkey
+          region: "{{region}}"
+          instance_type: "{{instance_type}}"
+          image: "{{memcache_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: mc01
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: mc01
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{vproappSG_out.group_id}}"
+          vpc_subnet_id: "{{PrivSub1Cidr}}"
+      register: mc01_out
+
+#print O/P on the shell
+ #   - debug: 
+ #      var: mc01_out
+
+
+# creating RabbitMQ instance
+    - name: creating RabbitMQ rmq01 instance
+      ec2:
+          key_name:  projectkey
+          region: "{{region}}"
+          instance_type: "{{instance_type}}"
+          image: "{{rmq_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: rmq01
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: rmq01
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{vproappSG_out.group_id}}"
+          vpc_subnet_id: "{{PrivSub1Cidr}}"
+      register: rmq01_out
+
+#print O/P on the shell
+ #   - debug: 
+ #      var: rmq01_out
+
+
+  # creating Mysql instance
+    - name: creating Mysql db01 instance
+      ec2:
+          key_name:  projectkey
+          region: "{{region}}"
+          instance_type: "{{instance_type}}"
+          image: "{{mysql_ami}}"
+          wait: yes
+          wait_timeout: 300
+          instance_tags:
+            Name: db01
+            Project: vprofile_projects
+            Owner: DevOps Team
+
+# make creation idempotent 
+          exact_count: 1
+          count_tag:
+            Name: db01
+            Project: vprofile_projects
+            Owner: DevOps Team
+          group_id: "{{vproappSG_out.group_id}}"
+          vpc_subnet_id: "{{PrivSub1Cidr}}"
+      register: db01_out
+
+#print O/P on the shell
+  #  - debug: 
+   #     var: db01_out
+  #       var: db01_out.tagged.instances[0].id
+
+#ELB creation
+    - local_action:
+        module: ec2_elb_lb
+        name: "vpro-elb"
+        region: "{{region}}"
+        state: "{{state}}"
+        instance_ids:
+          - "{{  Web01_out.tagged.instances[0].id  }}"
+        purge_instance_ids: true
+        security_group_ids: "{{vproELBSG_out.group_id}}"
+        subnets:
+          - "{{ PubSub1Cidr }}"
+          - "{{ PubSub2Cidr }}"
+          - "{{ PubSub3Cidr }}"
+        listeners:
+          - protocol: http # options are http, https, ssl, tcp
+            load_balancer_port: 80
+            instance_port: 80
+
+
+
+    - name: insert/ update Host IP and Name in provision-stack/group_vars/hostsip
+      blockinfile:
+          path: /home/ubuntu/ansible-playbooks/provision-stack/group_vars/hostsip
+          backup: no
+          block: |
+              web01_ip: {{  Web01_out.tagged.instances[0].private_ip }}
+              app01_ip: {{ app01_out.tagged.instances[0].private_ip }}
+              rmq01_ip: {{ rmq01_out.tagged.instances[0].private_ip }}
+              mc01_ip: {{ mc01_out.tagged.instances[0].private_ip }}
+              db01_ip: {{ db01_out.tagged.instances[0].private_ip }}
+              
+    - name: copy login key to provision_stack directory
+      copy:
+        src: projectkey.pem
+        dest: /home/ubuntu/ansible-playbooks/provision-stack/group_vars/projectkey.pem
+        mode: '0400'
+
+    - name: insert/ update Inventory file in provision-stack/inventory
+      blockinfile:
+          path: /home/ubuntu/ansible-playbooks/provision-stack/inventory
+          block: |
+              web01 ansible_host={{  Web01_out.tagged.instances[0].private_ip }}
+              app01 ansible_host={{ app01_out.tagged.instances[0].private_ip }}
+              rmq01 ansible_host={{ rmq01_out.tagged.instances[0].private_ip }}
+              mc01 ansible_host={{ mc01_out.tagged.instances[0].private_ip }}
+              db01 ansible_host={{ db01_out.tagged.instances[0].private_ip }}
+              cntl ansible_host=127.0.0.1 ansible_connection=local
+
+              [websergrp]
+              web01
+
+              [appsergrp]
+              app01
+
+              [rmqsergrp]
+              rmq01
+
+              [mcsergrp]
+              mc01
+
+              [dbsergrp]
+              db01
+
+              [control]
+              cntl
+
+              [stack_inst:children]
+              websergrp
+              appsergrp
+              rmqsergrp
+              mcsergrp
+              dbsergrp
+
+              [stack_inst:vars]
+              ansible_user=ubuntu
+              ansible_ssh_private_key_file=projectkey.pem
+              #ansible_python_interpreter=/use/bin/python3
+
+    
+
+
+
+
+
+
