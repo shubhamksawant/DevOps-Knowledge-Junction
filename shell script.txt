@@ -1177,3 +1177,6 @@ fg
 
 # tee Command to Print to File and Screen 04:43:57
 tee -a file.txt
+
+#find IP address 
+grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" /path/to/sourcefile > output.txt
